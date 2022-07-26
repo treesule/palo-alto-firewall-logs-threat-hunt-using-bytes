@@ -1,5 +1,10 @@
 # palo-alto-firewall-logs-threat-hunt-using-bytes.
 
+index=pan dest_zone=OUTSIDE src_zone!=OUTSIDE AND src_ip IN ("172.*")
+| streamstats sum(duration) AS total_duration BY src_ip
+| table src_ip dest_ip total_duration | sort -total_duration
+
+
 index=pan dest_zone=OUTSIDE src_zone!=OUTSIDE 
 | streamstats current=f last(_time) as next_time by dest 
 | eval gap = next_time - _time
